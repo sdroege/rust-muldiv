@@ -1,5 +1,5 @@
 #![crate_name = "muldiv"]
-#![feature(asm)]
+#![cfg_attr(feature = "x86-64-assembly", feature(asm))]
 
 use std::u8;
 use std::u16;
@@ -9,14 +9,14 @@ use std::i64;
 
 use std::cmp;
 
-#[cfg(not(target_arch="x86_64"))]
+#[cfg(any(not(feature="x86-64-assembly"), not(target_arch="x86_64")))]
 mod u64_muldiv;
-#[cfg(not(target_arch="x86_64"))]
+#[cfg(any(not(feature="x86-64-assembly"), not(target_arch="x86_64")))]
 use u64_muldiv::u64_scale;
 
-#[cfg(target_arch="x86_64")]
+#[cfg(all(feature="x86-64-assembly", target_arch="x86_64"))]
 mod u64_muldiv_x86_64;
-#[cfg(target_arch="x86_64")]
+#[cfg(all(feature="x86-64-assembly", target_arch="x86_64"))]
 use u64_muldiv_x86_64::u64_scale;
 
 pub trait MulDiv<RHS = Self> {

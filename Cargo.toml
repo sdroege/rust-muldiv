@@ -5,6 +5,10 @@ authors = ["Sebastian Dröge <sebastian@centricular.com>"]
 repository = "https://github.com/sdroege/rust-muldiv"
 license = "LGPL-2.1+"
 
+[features]
+default = []
+x86-64-assembly = []
+
 [dependencies]
 
 [dev-dependencies]
