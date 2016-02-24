@@ -205,7 +205,7 @@ mod muldiv_u64_tests {
             let den_big = den.to_biguint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if expected_rem >= den_big >> 1 { expected = expected + 1.to_biguint().unwrap() }
+            if expected_rem >= (den_big + 1.to_biguint().unwrap()) >> 1 { expected = expected + 1.to_biguint().unwrap() }
 
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -230,7 +230,7 @@ mod muldiv_u64_tests {
             let den_big = den.to_biguint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if expected_rem >= den_big >> 1 { expected = expected + 1.to_biguint().unwrap() }
+            if expected_rem >= (den_big + 1.to_biguint().unwrap()) >> 1 { expected = expected + 1.to_biguint().unwrap() }
 
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -255,7 +255,7 @@ mod muldiv_u64_tests {
             let den_big = den.to_biguint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if expected_rem >= den_big >> 1 { expected = expected + 1.to_biguint().unwrap() }
+            if expected_rem >= (den_big + 1.to_biguint().unwrap()) >> 1 { expected = expected + 1.to_biguint().unwrap() }
 
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -280,7 +280,7 @@ mod muldiv_u64_tests {
             let den_big = den.to_biguint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if expected_rem >= den_big >> 1 { expected = expected + 1.to_biguint().unwrap() }
+            if expected_rem >= (den_big + 1.to_biguint().unwrap()) >> 1 { expected = expected + 1.to_biguint().unwrap() }
 
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -607,8 +607,8 @@ mod muldiv_i64_tests {
             let den_big = den.to_bigint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if sgn < 0 && expected_rem.abs() > den_big.abs() >> 1 { expected = expected - 1.to_bigint().unwrap() }
-            else if sgn > 0 && expected_rem.abs() >= den_big.abs() >> 1 { expected = expected + 1.to_bigint().unwrap() }
+            if sgn < 0 && expected_rem.abs() > (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected - 1.to_bigint().unwrap() }
+            else if sgn > 0 && expected_rem.abs() >= (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected + 1.to_bigint().unwrap() }
 
             if expected > i64::MAX.to_bigint().unwrap() || expected < i64::MIN.to_bigint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -634,8 +634,8 @@ mod muldiv_i64_tests {
             let den_big = den.to_bigint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if sgn < 0 && expected_rem.abs() > den_big.abs() >> 1 { expected = expected - 1.to_bigint().unwrap() }
-            else if sgn > 0 && expected_rem.abs() >= den_big.abs() >> 1 { expected = expected + 1.to_bigint().unwrap() }
+            if sgn < 0 && expected_rem.abs() > (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected - 1.to_bigint().unwrap() }
+            else if sgn > 0 && expected_rem.abs() >= (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected + 1.to_bigint().unwrap() }
 
             if expected > i64::MAX.to_bigint().unwrap() || expected < i64::MIN.to_bigint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -661,8 +661,8 @@ mod muldiv_i64_tests {
             let den_big = den.to_bigint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if sgn < 0 && expected_rem.abs() > den_big.abs() >> 1 { expected = expected - 1.to_bigint().unwrap() }
-            else if sgn > 0 && expected_rem.abs() >= den_big.abs() >> 1 { expected = expected + 1.to_bigint().unwrap() }
+            if sgn < 0 && expected_rem.abs() > (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected - 1.to_bigint().unwrap() }
+            else if sgn > 0 && expected_rem.abs() >= (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected + 1.to_bigint().unwrap() }
 
             if expected > i64::MAX.to_bigint().unwrap() || expected < i64::MIN.to_bigint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -688,8 +688,8 @@ mod muldiv_i64_tests {
             let den_big = den.to_bigint().unwrap();
             let (mut expected, expected_rem) = (val_big * num_big).div_rem(&den_big);
 
-            if sgn < 0 && expected_rem.abs() > den_big.abs() >> 1 { expected = expected - 1.to_bigint().unwrap() }
-            else if sgn > 0 && expected_rem.abs() >= den_big.abs() >> 1 { expected = expected + 1.to_bigint().unwrap() }
+            if sgn < 0 && expected_rem.abs() > (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected - 1.to_bigint().unwrap() }
+            else if sgn > 0 && expected_rem.abs() >= (den_big.abs() + 1.to_bigint().unwrap()) >> 1 { expected = expected + 1.to_bigint().unwrap() }
 
             if expected > i64::MAX.to_bigint().unwrap() || expected < i64::MIN.to_bigint().unwrap() {
                 assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
@@ -873,9 +873,7 @@ macro_rules! mul_div_impl_unsigned_tests {
             }
         }
 
-        // FIXME: This fails because of wrong rounding in the test
         #[test]
-        #[ignore]
         fn scale_round_rng() {
             let mut rng = thread_rng();
 
@@ -890,7 +888,7 @@ macro_rules! mul_div_impl_unsigned_tests {
 
                 let (mut expected, expected_rem) = ((val as $u) * (num as $u)).div_rem(&(den as $u));
 
-                if expected_rem > (den as $u) >> 1 { expected = expected + 1 }
+                if expected_rem >= ((den as $u) + 1) >> 1 { expected = expected + 1 }
 
                 if expected > $t::MAX as $u {
                     assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
