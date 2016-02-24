@@ -5,6 +5,9 @@ use std::u8;
 use std::u16;
 use std::u32;
 
+use std::i8;
+use std::i16;
+use std::i32;
 use std::i64;
 
 use std::cmp;
@@ -398,11 +401,6 @@ mod muldiv_u64_tests {
 
 }
 
-fn abs_u64(x: i64) -> u64 {
-    if x != i64::MIN { x.abs() as u64 }
-    else { 0x8000000000000000u64 }
-}
-
 impl MulDiv for i64 {
     type Output = Option<i64>;
 
@@ -411,16 +409,19 @@ impl MulDiv for i64 {
 
         let sgn = self.signum() * num.signum() * denom.signum();
 
-        let self_u = abs_u64(self);
-        let num_u = abs_u64(num);
-        let denom_u = abs_u64(denom);
+        let min_val : u64 = 1 << (64 - 1);
+        let abs = |x: i64| if x != i64::MIN { x.abs() as u64 } else { min_val };
+
+        let self_u = abs(self);
+        let num_u = abs(num);
+        let denom_u = abs(denom);
 
         if sgn < 0 {
             self_u.mul_div_ceil(num_u, denom_u)
         } else {
             self_u.mul_div_floor(num_u, denom_u)
-        }.and_then(|r| if r < i64::MAX as u64 { Some(sgn * (r as i64)) }
-                          else if sgn < 0 && r == 0x8000000000000000u64 { Some(i64::MIN) }
+        }.and_then(|r| if r <= i64::MAX as u64 { Some(sgn * (r as i64)) }
+                          else if sgn < 0 && r == min_val { Some(i64::MIN) }
                           else { None }
                   )
     }
@@ -430,16 +431,19 @@ impl MulDiv for i64 {
 
         let sgn = self.signum() * num.signum() * denom.signum();
 
-        let self_u = abs_u64(self);
-        let num_u = abs_u64(num);
-        let denom_u = abs_u64(denom);
+        let min_val : u64 = 1 << (64 - 1);
+        let abs = |x: i64| if x != i64::MIN { x.abs() as u64 } else { min_val };
+
+        let self_u = abs(self);
+        let num_u = abs(num);
+        let denom_u = abs(denom);
 
         if sgn < 0 {
             u64_scale(self_u, num_u, denom_u, cmp::max(denom_u >> 1, 1) - 1)
         } else {
             self_u.mul_div_round(num_u, denom_u)
-        }.and_then(|r| if r < i64::MAX as u64 { Some(sgn * (r as i64)) }
-                       else if sgn < 0 && r == 0x8000000000000000u64 { Some(i64::MIN) }
+        }.and_then(|r| if r <= i64::MAX as u64 { Some(sgn * (r as i64)) }
+                       else if sgn < 0 && r == min_val { Some(i64::MIN) }
                        else { None }
                   )
     }
@@ -449,16 +453,19 @@ impl MulDiv for i64 {
 
         let sgn = self.signum() * num.signum() * denom.signum();
 
-        let self_u = abs_u64(self);
-        let num_u = abs_u64(num);
-        let denom_u = abs_u64(denom);
+        let min_val : u64 = 1 << (64 - 1);
+        let abs = |x: i64| if x != i64::MIN { x.abs() as u64 } else { min_val };
+
+        let self_u = abs(self);
+        let num_u = abs(num);
+        let denom_u = abs(denom);
 
         if sgn < 0 {
             self_u.mul_div_floor(num_u, denom_u)
         } else {
             self_u.mul_div_ceil(num_u, denom_u)
-        }.and_then(|r| if r < i64::MAX as u64 { Some(sgn * (r as i64)) }
-                       else if sgn < 0 && r == 0x8000000000000000u64 { Some(i64::MIN) }
+        }.and_then(|r| if r <= i64::MAX as u64 { Some(sgn * (r as i64)) }
+                       else if sgn < 0 && r == min_val { Some(i64::MIN) }
                        else { None }
                   )
     }
@@ -948,4 +955,194 @@ mod muldiv_u8_tests {
     mul_div_impl_unsigned_tests!(u8, u16);
 }
 
-// TODO: Add s32/16/8 implementations
+macro_rules! mul_div_impl_signed {
+    ($t:ident, $u:ident, $v:ident, $b:expr) => (
+
+    impl MulDiv for $t {
+        type Output = Option<$t>;
+
+        fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
+            assert!(denom != 0);
+
+            let sgn = self.signum() * num.signum() * denom.signum();
+
+            let min_val : $u = 1 << ($b - 1);
+            let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
+
+            let self_u = abs(self);
+            let num_u = abs(num);
+            let denom_u = abs(denom);
+
+            if sgn < 0 {
+                self_u.mul_div_ceil(num_u, denom_u)
+            } else {
+                self_u.mul_div_floor(num_u, denom_u)
+            }.and_then(|r| if r <= $t::MAX as $u { Some(sgn * (r as $t)) }
+                              else if sgn < 0 && r == min_val { Some($t::MIN) }
+                              else { None }
+                      )
+        }
+
+        fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
+            assert!(denom != 0);
+
+            let sgn = self.signum() * num.signum() * denom.signum();
+
+            let min_val : $u = 1 << ($b - 1);
+            let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
+
+            let self_u = abs(self);
+            let num_u = abs(num);
+            let denom_u = abs(denom);
+
+            if sgn < 0 {
+                let r = ((self_u as $v) * (num_u as $v) + ((cmp::max(denom_u >> 1, 1) - 1) as $v)) / (denom_u as $v);
+                if r > $u::MAX as $v { None } else { Some(r as $u) }
+            } else {
+                self_u.mul_div_round(num_u, denom_u)
+            }.and_then(|r| if r <= $t::MAX as $u { Some(sgn * (r as $t)) }
+                           else if sgn < 0 && r == min_val { Some($t::MIN) }
+                           else { None }
+                      )
+        }
+
+        fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
+            assert!(denom != 0);
+
+            let sgn = self.signum() * num.signum() * denom.signum();
+
+            let min_val : $u = 1 << ($b - 1);
+            let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
+
+            let self_u = abs(self);
+            let num_u = abs(num);
+            let denom_u = abs(denom);
+
+            if sgn < 0 {
+                self_u.mul_div_floor(num_u, denom_u)
+            } else {
+                self_u.mul_div_ceil(num_u, denom_u)
+            }.and_then(|r| if r <= $t::MAX as $u { Some(sgn * (r as $t)) }
+                           else if sgn < 0 && r == min_val { Some($t::MIN) }
+                           else { None }
+                      )
+        }
+    }
+    )
+}
+
+mul_div_impl_signed!(i32, u32, u64, 32);
+mul_div_impl_signed!(i16, u16, u32, 16);
+mul_div_impl_signed!(i8, u8, u16, 8);
+
+macro_rules! mul_div_impl_signed_tests {
+    ($t:ident, $u:ident) => (
+        use super::*;
+
+        extern crate num;
+        extern crate rand;
+
+        use self::num::integer::Integer;
+        use self::rand::thread_rng;
+        use self::rand::Rng;
+        use std::$t;
+
+        #[test]
+        fn scale_floor_rng() {
+            let mut rng = thread_rng();
+
+            for _ in 0..10000 {
+                let val: $t = rng.gen();
+                let num: $t = rng.gen();
+                let den: $t = rng.gen();
+                let sgn = val.signum() * num.signum() * den.signum();
+
+                if den == 0 { continue; }
+
+                let res = val.mul_div_floor(num, den);
+
+                let (mut expected, expected_rem) = ((val as $u) * (num as $u)).div_rem(&(den as $u));
+
+                if sgn < 0 && expected_rem.abs() != 0 { expected = expected - 1 }
+
+                if expected > $t::MAX as $u || expected < $t::MIN as $u {
+                    assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
+                } else {
+                    assert!(res.is_some(), format!("{} * {} / {}: expected {} but got overflow", val, num, den, expected));
+                    assert!(res.unwrap() == expected as $t, format!("{} * {} / {}: expected {} but got {}", val, num, den, expected, res.unwrap()));
+                }
+            }
+        }
+        #[test]
+        fn scale_round_rng() {
+            let mut rng = thread_rng();
+
+            for _ in 0..10000 {
+                let val: $t = rng.gen();
+                let num: $t = rng.gen();
+                let den: $t = rng.gen();
+                let sgn = val.signum() * num.signum() * den.signum();
+
+                if den == 0 { continue; }
+
+                let res = val.mul_div_round(num, den);
+
+                let (mut expected, expected_rem) = ((val as $u) * (num as $u)).div_rem(&(den as $u));
+
+                if sgn < 0 && expected_rem.abs() > ((den as $u).abs() + 1) >> 1 { expected = expected - 1 }
+                else if sgn > 0 && expected_rem.abs() >= ((den as $u).abs() + 1) >> 1 { expected = expected + 1 }
+
+                if expected > $t::MAX as $u || expected < $t::MIN as $u {
+                    assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
+                } else {
+                    assert!(res.is_some(), format!("{} * {} / {}: expected {} but got overflow", val, num, den, expected));
+                    assert!(res.unwrap() == expected as $t, format!("{} * {} / {}: expected {} but got {}", val, num, den, expected, res.unwrap()));
+                }
+            }
+        }
+
+        #[test]
+        fn scale_ceil_rng() {
+            let mut rng = thread_rng();
+
+            for _ in 0..10000 {
+                let val: $t = rng.gen();
+                let num: $t = rng.gen();
+                let den: $t = rng.gen();
+                let sgn = val.signum() * num.signum() * den.signum();
+
+                if den == 0 { continue; }
+
+                let res = val.mul_div_ceil(num, den);
+
+                let (mut expected, expected_rem) = ((val as $u) * (num as $u)).div_rem(&(den as $u));
+
+                if sgn > 0 && expected_rem.abs() != 0 { expected = expected + 1 }
+
+                if expected > $t::MAX as $u || expected < $t::MIN as $u {
+                    assert!(res.is_none(), format!("{} * {} / {}: expected overflow, got {}", val, num, den, res.unwrap()));
+                } else {
+                    assert!(res.is_some(), format!("{} * {} / {}: expected {} but got overflow", val, num, den, expected));
+                    assert!(res.unwrap() == expected as $t, format!("{} * {} / {}: expected {} but got {}", val, num, den, expected, res.unwrap()));
+                }
+            }
+        }
+    )
+}
+
+// FIXME: https://github.com/rust-lang/rust/issues/12249
+#[cfg(test)]
+mod muldiv_i32_tests {
+    mul_div_impl_signed_tests!(i32, i64);
+}
+
+#[cfg(test)]
+mod muldiv_i16_tests {
+    mul_div_impl_signed_tests!(i16, i32);
+}
+
+#[cfg(test)]
+mod muldiv_i8_tests {
+    mul_div_impl_signed_tests!(i8, i16);
+}
+
