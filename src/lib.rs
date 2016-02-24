@@ -25,13 +25,13 @@ use u64_muldiv_x86_64::u64_scale;
 pub trait MulDiv<RHS = Self> {
     type Output;
 
-    fn mul_div_floor(self, num: RHS, denom: RHS) -> Self::Output;
-    fn mul_div_round(self, num: RHS, denom: RHS) -> Self::Output;
-    fn mul_div_ceil(self, num: RHS, denom: RHS) -> Self::Output;
+    fn mul_div_floor(self, num: RHS, denom: RHS) -> Option<Self::Output>;
+    fn mul_div_round(self, num: RHS, denom: RHS) -> Option<Self::Output>;
+    fn mul_div_ceil(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 }
 
 impl MulDiv for u64 {
-    type Output = Option<u64>;
+    type Output = u64;
 
     fn mul_div_floor(self, num: u64, denom: u64) -> Option<u64> {
         assert!(denom != 0);
@@ -402,7 +402,7 @@ mod muldiv_u64_tests {
 }
 
 impl MulDiv for i64 {
-    type Output = Option<i64>;
+    type Output = i64;
 
     fn mul_div_floor(self, num: i64, denom: i64) -> Option<i64> {
         assert!(denom != 0);
@@ -821,7 +821,7 @@ macro_rules! mul_div_impl_unsigned {
     ($t:ident, $u:ident) => (
 
     impl MulDiv for $t {
-        type Output = Option<$t>;
+        type Output = $t;
 
         fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
             assert!(denom != 0);
@@ -959,7 +959,7 @@ macro_rules! mul_div_impl_signed {
     ($t:ident, $u:ident, $v:ident, $b:expr) => (
 
     impl MulDiv for $t {
-        type Output = Option<$t>;
+        type Output = $t;
 
         fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
             assert!(denom != 0);
