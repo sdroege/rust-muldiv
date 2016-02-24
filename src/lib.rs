@@ -1,3 +1,20 @@
+//! Provides a trait for numeric types to perform combined multiplication and division with overflow protection.
+//!
+//! The `MulDiv` trait provides functions for performing combined multiplication and division for
+//! numeric types and comes with implementations for all the primitive integer types. Three
+//! variants with different rounding characteristics are provided: `mul_div_floor()`,
+//! `mul_div_round()` and `mul_div_ceil()`.
+//!
+//! ## Example
+//!
+//! ```rust
+//! extern crate muldiv;
+//! use muldiv::MulDiv;
+//!
+//! // Calculates 127 * 23 / 42 rounded down
+//! let x = 127u8.mul_div_floor(23, 42);
+//! ```
+
 #![crate_name = "muldiv"]
 #![cfg_attr(feature = "x86-64-assembly", feature(asm))]
 
@@ -22,11 +39,105 @@ mod u64_muldiv_x86_64;
 #[cfg(all(feature="x86-64-assembly", target_arch="x86_64"))]
 use u64_muldiv_x86_64::u64_scale;
 
+/// Trait for calculating `val * num / denom` with different rounding modes and overflow
+/// protection.
+///
+/// Implementations of this trait have to ensure that even if the result of the multiplication does
+/// not fit into the type, as long as it would fit after the division the correct result has to be
+/// returned instead of `None`. `None` only should be returned if the overall result does not fit
+/// into the type.
+///
+/// This specifically means that e.g. the `u64` implementation must, depending on the arguments, be
+/// able to do 128 bit integer multiplication.
 pub trait MulDiv<RHS = Self> {
     type Output;
 
+    /// Calculates `floor(val * num / denom)`, i.e. the next integer to the result of the division
+    /// with the smaller absolute value.
+    ///
+    /// ## Example
+    ///
+    /// ```rust
+    /// extern crate muldiv;
+    /// use muldiv::MulDiv;
+    ///
+    /// // Returns x==Some(6)
+    /// let x = 3i8.mul_div_floor(4, 2);
+    ///
+    /// // Returns x==Some(3)
+    /// let x = 5i8.mul_div_floor(2, 3);
+    ///
+    /// // Returns x==Some(-3)
+    /// let x = (-5i8).mul_div_floor(2, 3);
+    ///
+    /// // Returns x==Some(4)
+    /// let x = 3i8.mul_div_floor(3, 2);
+    ///
+    /// // Returns x==Some(-4)
+    /// let x = (-3i8).mul_div_floor(3, 2);
+    ///
+    /// // Returns x==None
+    /// let x = 127i8.mul_div_floor(4, 3);
+    /// ```
     fn mul_div_floor(self, num: RHS, denom: RHS) -> Option<Self::Output>;
+
+    /// Calculates `round(val * num / denom)`, i.e. the closest integer to the result of the
+    /// division. If both surrounding integers are the same distance, the one with the bigger
+    /// absolute value is returned.
+    ///
+    /// ## Example
+    ///
+    /// ```rust
+    /// extern crate muldiv;
+    /// use muldiv::MulDiv;
+    ///
+    /// // Returns x==Some(6)
+    /// let x = 3i8.mul_div_round(4, 2);
+    ///
+    /// // Returns x==Some(3)
+    /// let x = 5i8.mul_div_round(2, 3);
+    ///
+    /// // Returns x==Some(-3)
+    /// let x = (-5i8).mul_div_round(2, 3);
+    ///
+    /// // Returns x==Some(5)
+    /// let x = 3i8.mul_div_round(3, 2);
+    ///
+    /// // Returns x==Some(-5)
+    /// let x = (-3i8).mul_div_round(3, 2);
+    ///
+    /// // Returns x==None
+    /// let x = 127i8.mul_div_floor(4, 3);
+    /// ```
     fn mul_div_round(self, num: RHS, denom: RHS) -> Option<Self::Output>;
+
+    /// Calculates `ceil(val * num / denom)`, i.e. the next integer to the result of the division
+    /// with the bigger absolute value.
+    ///
+    /// ## Example
+    ///
+    /// ```rust
+    /// extern crate muldiv;
+    /// use muldiv::MulDiv;
+    ///
+    /// // Returns x==Some(6)
+    /// let x = 3i8.mul_div_ceil(4, 2);
+    ///
+    /// // Returns x==Some(4)
+    /// let x = 5i8.mul_div_ceil(2, 3);
+    ///
+    /// // Returns x==Some(-4)
+    /// let x = (-5i8).mul_div_ceil(2, 3);
+    ///
+    /// // Returns x==Some(5)
+    /// let x = 3i8.mul_div_ceil(3, 2);
+    ///
+    /// // Returns x==Some(-5)
+    /// let x = (-3i8).mul_div_ceil(3, 2);
+    ///
+    /// // Returns x==None
+    /// let x = (127i8).mul_div_ceil(4, 3);
+    /// ```
     fn mul_div_ceil(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 }
 
