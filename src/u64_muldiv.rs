@@ -1,10 +1,21 @@
 use std::u32;
 use std::u64;
 
+const U32_MAX: u64 = u32::MAX as u64;
+
+// Helper trait to get the upper and lower part of an integer
+trait LoHi {
+    fn lo(self) -> Self;
+    fn hi(self) -> Self;
+}
+
+impl LoHi for u64 {
+    fn lo(self) -> u64 { self & U32_MAX }
+    fn hi(self) -> u64 { self >> 32 }
+}
+
 // Port of gst_util_uint64_scale() and friends from
 // https://cgit.freedesktop.org/gstreamer/gstreamer/tree/gst/gstutils.c
-
-const U32_MAX: u64 = u32::MAX as u64;
 
 struct U96 { pub h: u64, pub l: u32 }
 
@@ -21,13 +32,13 @@ fn u96_correct(mut c: U96, val: u32) -> Option<U96> {
 }
 
 fn u64_mul_u32(v: u64, n: u32) -> U96 {
-    let vh = v >> 32;
-    let vl = v & U32_MAX;
+    let vh = v.hi();
+    let vl = v.lo();
 
     let l = vl * (n as u64);
-    let h = vh * (n as u64) + (l >> 32);
+    let h = vh * (n as u64) + l.hi();
 
-    U96 {h: h, l: (l & U32_MAX) as u32}
+    U96 {h: h, l: l.lo() as u32}
 }
 
 fn u96_div_u32(num: U96, denom: u32) -> u64 {
@@ -72,20 +83,20 @@ fn u64_mul_u64(v: u64, n: u64) -> U128 {
      * optimized away, result is stored directly in c1.
      */
 
-    let mut c0 = (v & U32_MAX) * (n & U32_MAX);
-    let a1 = (v & U32_MAX) * (n >> 32);
-    let b0 = (v >> 32) * (n & U32_MAX);
+    let mut c0 = v.lo() * n.lo();
+    let a1 = v.lo() * n.hi();
+    let b0 = v.hi() * n.lo();
 
     /* add the high word of a0 to the low words of a1 and b0 using c1 as
      * scrach space to capture the carry.  the low word of the result becomes
      * the final high word of c0 */
-    let mut c1 = (c0 >> 32) + (a1 & U32_MAX) + (b0 & U32_MAX);
+    let mut c1 = c0.hi() + a1.lo() + b0.lo();
 
-    c0 = ((c1 & U32_MAX) << 32) | (c0 & U32_MAX);
+    c0 = (c1.lo() << 32) | c0.lo();
 
     /* add the carry from the result above (found in the high word of c1) and
      * the high words of a1 and b0 to b1, the result is c1. */
-    c1 = (v >> 32) * (n >> 32) + (c1 >> 32) + (a1 >> 32) + (b0 >> 32);
+    c1 = v.hi() * n.hi() + c1.hi() + a1.hi() + b0.hi();
 
     U128 {h: c1, l: c0}
 }
@@ -100,53 +111,53 @@ fn u128_div_u64(num: U128, denom: u64) -> u64 {
 
     /* count number of leading zeroes, we know they must be in the high
      * part of denom since denom > G_MAXUINT32. */
-    let s = ((denom >> 32) as u32).leading_zeros();
+    let s = (denom.hi() as u32).leading_zeros();
 
     let v;
     if s > 0 {
         /* normalize divisor and dividend */
         v = denom << s;
-        c1 = (c1 << s) | ((c0 >> 32) >> (32 - s));
+        c1 = (c1 << s) | (c0.hi() >> (32 - s));
         c0 <<= s;
     } else {
         v = denom;
     }
 
-    let mut q1 = c1 / (v >> 32);
-    let mut rhat = c1.wrapping_sub(q1.wrapping_mul(v >> 32));
+    let mut q1 = c1 / v.hi();
+    let mut rhat = c1.wrapping_sub(q1.wrapping_mul(v.hi()));
 
-    let mut cmp1 = ((rhat & U32_MAX) << 32) | (c0 >> 32);
-    let mut cmp2 = q1.wrapping_mul(v & U32_MAX);
+    let mut cmp1 = (rhat.lo() << 32) | c0.hi();
+    let mut cmp2 = q1.wrapping_mul(v.lo());
 
     while (q1 >> 32 != 0) || cmp2 > cmp1 {
         q1 -= 1;
-        rhat += v >> 32;
-        if (rhat >> 32) != 0 { break; }
+        rhat += v.hi();
+        if rhat.hi() != 0 { break; }
 
-        cmp1 = ((rhat & U32_MAX) << 32) | (cmp1 & U32_MAX);
-        cmp2 -= v & U32_MAX;
+        cmp1 = (rhat.lo() << 32) | cmp1.lo();
+        cmp2 -= v.lo();
     }
 
-    c1 = ((c1 & U32_MAX) << 32) | (c0 >> 32);
+    c1 = (c1.lo() << 32) | c0.hi();
     c1 = c1.wrapping_sub(q1.wrapping_mul(v));
 
-    let mut q0 = c1 / (v >> 32);
+    let mut q0 = c1 / v.hi();
 
-    rhat = c1.wrapping_sub(q0.wrapping_mul(v >> 32));
+    rhat = c1.wrapping_sub(q0.wrapping_mul(v.hi()));
 
-    cmp1 = ((rhat & U32_MAX) << 32) | (c0 & U32_MAX);
-    cmp2 = q0.wrapping_mul(v & U32_MAX);
+    cmp1 = (rhat.lo() << 32) | c0.lo();
+    cmp2 = q0.wrapping_mul(v.lo());
 
-    while (q0 >> 32 != 0) || cmp2 > cmp1 {
+    while q0.hi() != 0 || cmp2 > cmp1 {
         q0 -= 1;
-        rhat += v >> 32;
-        if (rhat >> 32) != 0 { break; }
+        rhat += v.hi();
+        if rhat.hi() != 0 { break; }
 
-        cmp1 = ((rhat & U32_MAX) << 32) | (cmp1 & U32_MAX);
-        cmp2 -= v & U32_MAX;
+        cmp1 = (rhat.lo() << 32) | cmp1.lo();
+        cmp2 -= v.lo();
     }
 
-    q0 = (((q0 >> 32) + (q1 & U32_MAX)) << 32) | (q0 & U32_MAX);
+    q0 = ((q0.hi() + q1.lo()) << 32) | q0.lo();
 
     return q0;
 }
