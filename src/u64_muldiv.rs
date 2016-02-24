@@ -92,22 +92,6 @@ fn u64_mul_u64(v: u64, n: u64) -> U128 {
 
 /* based on Hacker's Delight p152 */
 
-// count leading zeroes
-fn u32_clz(val: u32) -> u32 {
-    let mut s = val | (val >> 1);
-    s |= s >> 2;
-    s |= s >> 4;
-    s |= s >> 8;
-    s = !(s | (s >> 16));
-    s = s - ((s >> 1) & 0x55555555);
-    s = (s & 0x33333333) + ((s >> 2) & 0x33333333);
-    s = (s + (s >> 4)) & 0x0f0f0f0f;
-    s += s >> 8;
-    s = (s + (s >> 16)) & 0x3f;
-
-    return s;
-}
-
 fn u128_div_u64(num: U128, denom: u64) -> u64 {
     assert!(denom > U32_MAX);
 
@@ -116,7 +100,7 @@ fn u128_div_u64(num: U128, denom: u64) -> u64 {
 
     /* count number of leading zeroes, we know they must be in the high
      * part of denom since denom > G_MAXUINT32. */
-    let s = u32_clz((denom >> 32) as u32);
+    let s = ((denom >> 32) as u32).leading_zeros();
 
     let v;
     if s > 0 {
