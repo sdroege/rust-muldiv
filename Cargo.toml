@@ -10,6 +10,13 @@ description = """
 Provides a trait for numeric types to perform combined multiplication and
 division with overflow protection
 """
+include = [
+    "src/lib.rs",
+    "src/u64_muldiv.rs",
+    "src/u64_muldiv_x86_64.rs",
+    "COPYING",
+    "Cargo.toml",
+]
 
 [features]
 default = []
