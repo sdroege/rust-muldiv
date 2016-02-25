@@ -15,7 +15,6 @@
 //! let x = 127u8.mul_div_floor(23, 42);
 //! ```
 
-#![crate_name = "muldiv"]
 #![cfg_attr(feature = "x86-64-assembly", feature(asm))]
 
 use std::u8;
