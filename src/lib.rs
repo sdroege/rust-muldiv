@@ -10,9 +10,10 @@
 //! ```rust
 //! extern crate muldiv;
 //! use muldiv::MulDiv;
-//!
+//! # fn main() {
 //! // Calculates 127 * 23 / 42 rounded down
 //! let x = 127u8.mul_div_floor(23, 42);
+//! # }
 //! ```
 
 #![cfg_attr(feature = "x86-64-assembly", feature(asm))]
@@ -60,6 +61,7 @@ pub trait MulDiv<RHS = Self> {
     /// extern crate muldiv;
     /// use muldiv::MulDiv;
     ///
+    /// # fn main() {
     /// // Returns x==Some(6)
     /// let x = 3i8.mul_div_floor(4, 2);
     ///
@@ -77,6 +79,7 @@ pub trait MulDiv<RHS = Self> {
     ///
     /// // Returns x==None
     /// let x = 127i8.mul_div_floor(4, 3);
+    /// # }
     /// ```
     fn mul_div_floor(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 
@@ -90,6 +93,7 @@ pub trait MulDiv<RHS = Self> {
     /// extern crate muldiv;
     /// use muldiv::MulDiv;
     ///
+    /// # fn main() {
     /// // Returns x==Some(6)
     /// let x = 3i8.mul_div_round(4, 2);
     ///
@@ -107,6 +111,7 @@ pub trait MulDiv<RHS = Self> {
     ///
     /// // Returns x==None
     /// let x = 127i8.mul_div_floor(4, 3);
+    /// # }
     /// ```
     fn mul_div_round(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 
@@ -119,6 +124,7 @@ pub trait MulDiv<RHS = Self> {
     /// extern crate muldiv;
     /// use muldiv::MulDiv;
     ///
+    /// # fn main() {
     /// // Returns x==Some(6)
     /// let x = 3i8.mul_div_ceil(4, 2);
     ///
@@ -136,6 +142,7 @@ pub trait MulDiv<RHS = Self> {
     ///
     /// // Returns x==None
     /// let x = (127i8).mul_div_ceil(4, 3);
+    /// # }
     /// ```
     fn mul_div_ceil(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 }
