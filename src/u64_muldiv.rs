@@ -188,7 +188,7 @@ fn u128_div_u64(num: U128, denom: u64) -> u64 {
 
     q0 = ((q0.hi() + q1.lo()) << 32) | q0.lo();
 
-    return q0;
+    q0
 }
 
 fn u64_scale_u64_unchecked(val: u64, num: u64, denom: u64, correct: u64) -> Option<u64> {
@@ -232,5 +232,5 @@ pub fn u64_scale(val: u64, num: u64, denom: u64, correct: u64) -> Option<u64> {
     }
 
     // val is high and num is high --> use 128-bit muldiv
-    return u64_scale_u64_unchecked(val, num, denom, correct);
+    u64_scale_u64_unchecked(val, num, denom, correct)
 }
