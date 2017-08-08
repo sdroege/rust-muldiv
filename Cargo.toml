@@ -15,6 +15,7 @@ include = [
     "src/u64_muldiv.rs",
     "src/u64_muldiv_x86_64.rs",
     "COPYING",
+    "README.md",
     "Cargo.toml",
 ]
 
