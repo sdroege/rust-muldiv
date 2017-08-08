@@ -3,9 +3,9 @@ name = "muldiv"
 version = "0.1.0"
 authors = ["Sebastian Dröge <sebastian@centricular.com>"]
 repository = "https://github.com/sdroege/rust-muldiv"
-documentation = "https://sdroege.github.io/rust/rust-muldiv/"
 license = "LGPL-2.1+"
 keywords = ["integer", "arithmetic", "numerics"]
+categories = ["algorithms"]
 description = """
 Provides a trait for numeric types to perform combined multiplication and
 division with overflow protection
