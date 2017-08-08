@@ -1487,6 +1487,7 @@ macro_rules! mul_div_impl_unsigned {
     )
 }
 
+#[cfg(test)]
 macro_rules! mul_div_impl_unsigned_tests {
     ($t:ident, $u:ident) => (
         use super::*;
@@ -1699,6 +1700,7 @@ mul_div_impl_signed!(i32, u32, u64, 32);
 mul_div_impl_signed!(i16, u16, u32, 16);
 mul_div_impl_signed!(i8, u8, u16, 8);
 
+#[cfg(test)]
 macro_rules! mul_div_impl_signed_tests {
     ($t:ident, $u:ident) => (
         use super::*;
