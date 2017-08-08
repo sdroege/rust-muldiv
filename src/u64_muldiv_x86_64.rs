@@ -1,6 +1,7 @@
 use std::u64;
 use std::mem::uninitialized;
 
+#[derive(Copy, Clone)]
 struct U128 {
     pub h: u64,
     pub l: u64,
@@ -57,7 +58,7 @@ fn u64_scale_u64_unchecked(val: u64, num: u64, denom: u64, correct: u64) -> Opti
 }
 
 pub fn u64_scale(val: u64, num: u64, denom: u64, correct: u64) -> Option<u64> {
-    assert!(denom != 0);
+    assert_ne!(denom, 0);
     assert!(correct <= denom);
 
     if num == 0 {

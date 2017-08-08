@@ -151,17 +151,17 @@ impl MulDiv for u64 {
     type Output = u64;
 
     fn mul_div_floor(self, num: u64, denom: u64) -> Option<u64> {
-        assert!(denom != 0);
+        assert_ne!(denom, 0);
         u64_scale(self, num, denom, 0)
     }
 
     fn mul_div_round(self, num: u64, denom: u64) -> Option<u64> {
-        assert!(denom != 0);
+        assert_ne!(denom, 0);
         u64_scale(self, num, denom, denom >> 1)
     }
 
     fn mul_div_ceil(self, num: u64, denom: u64) -> Option<u64> {
-        assert!(denom != 0);
+        assert_ne!(denom, 0);
         u64_scale(self, num, denom, denom - 1)
     }
 }
@@ -260,35 +260,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -313,35 +308,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -366,35 +356,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -419,35 +404,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -481,35 +461,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -538,35 +513,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -595,35 +565,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -652,35 +617,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -714,35 +674,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -771,35 +726,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -828,35 +778,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -885,35 +830,30 @@ mod muldiv_u64_tests {
             if expected > u64::MAX.to_biguint().unwrap() {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_biguint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_biguint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -925,7 +865,7 @@ impl MulDiv for i64 {
     type Output = i64;
 
     fn mul_div_floor(self, num: i64, denom: i64) -> Option<i64> {
-        assert!(denom != 0);
+        assert_ne!(denom, 0);
 
         let sgn = self.signum() * num.signum() * denom.signum();
 
@@ -954,7 +894,7 @@ impl MulDiv for i64 {
     }
 
     fn mul_div_round(self, num: i64, denom: i64) -> Option<i64> {
-        assert!(denom != 0);
+        assert_ne!(denom, 0);
 
         let sgn = self.signum() * num.signum() * denom.signum();
 
@@ -983,7 +923,7 @@ impl MulDiv for i64 {
     }
 
     fn mul_div_ceil(self, num: i64, denom: i64) -> Option<i64> {
-        assert!(denom != 0);
+        assert_ne!(denom, 0);
 
         let sgn = self.signum() * num.signum() * denom.signum();
 
@@ -1057,35 +997,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1117,35 +1052,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1177,35 +1107,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1237,35 +1162,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1306,35 +1226,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1370,35 +1285,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1434,35 +1344,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1498,35 +1403,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1563,35 +1463,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1623,35 +1518,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1683,35 +1573,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1743,35 +1628,30 @@ mod muldiv_i64_tests {
             {
                 assert!(
                     res.is_none(),
-                    format!(
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    )
+                    "{} * {} / {}: expected overflow, got {}",
+                    val,
+                    num,
+                    den,
+                    res.unwrap()
                 );
             } else {
                 assert!(
                     res.is_some(),
-                    format!(
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    )
+                    "{} * {} / {}: expected {} but got overflow",
+                    val,
+                    num,
+                    den,
+                    expected
                 );
-                assert!(
-                    res.unwrap().to_bigint().unwrap() == expected,
-                    format!(
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    )
+                assert_eq!(
+                    res.unwrap().to_bigint().unwrap(),
+                    expected,
+                    "{} * {} / {}: expected {} but got {}",
+                    val,
+                    num,
+                    den,
+                    expected,
+                    res.unwrap()
                 );
             }
         }
@@ -1785,19 +1665,19 @@ macro_rules! mul_div_impl_unsigned {
         type Output = $t;
 
         fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
-            assert!(denom != 0);
+            assert_ne!(denom, 0);
             let r = ((self as $u) * (num as $u)) / (denom as $u);
             if r > $t::MAX as $u { None } else { Some(r as $t) }
         }
 
         fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
-            assert!(denom != 0);
+            assert_ne!(denom, 0);
             let r = ((self as $u) * (num as $u) + ((denom >> 1) as $u)) / (denom as $u);
             if r > $t::MAX as $u { None } else { Some(r as $t) }
         }
 
         fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
-            assert!(denom != 0);
+            assert_ne!(denom, 0);
             let r = ((self as $u) * (num as $u) + ((denom - 1) as $u)) / (denom as $u);
             if r > $t::MAX as $u { None } else { Some(r as $t) }
         }
@@ -1835,15 +1715,15 @@ macro_rules! mul_div_impl_unsigned_tests {
 
                 if expected > $t::MAX as $u {
                     assert!(res.is_none(),
-                            format!("{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap()));
+                            "{} * {} / {}: expected overflow, got {}",
+                                    val, num, den, res.unwrap());
                 } else {
                     assert!(res.is_some(),
-                            format!("{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected));
-                    assert!(res.unwrap() == expected as $t,
-                            format!("{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap()));
+                            "{} * {} / {}: expected {} but got overflow",
+                                    val, num, den, expected);
+                    assert_eq!(res.unwrap(), expected as $t,
+                            "{} * {} / {}: expected {} but got {}",
+                                    val, num, den, expected, res.unwrap());
                 }
             }
         }
@@ -1868,15 +1748,15 @@ macro_rules! mul_div_impl_unsigned_tests {
 
                 if expected > $t::MAX as $u {
                     assert!(res.is_none(),
-                            format!("{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap()));
+                            "{} * {} / {}: expected overflow, got {}",
+                                    val, num, den, res.unwrap());
                 } else {
                     assert!(res.is_some(),
-                            format!("{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected));
-                    assert!(res.unwrap() == expected as $t,
-                            format!("{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap()));
+                            "{} * {} / {}: expected {} but got overflow",
+                                    val, num, den, expected);
+                    assert_eq!(res.unwrap(), expected as $t,
+                            "{} * {} / {}: expected {} but got {}",
+                                    val, num, den, expected, res.unwrap());
                 }
             }
         }
@@ -1901,15 +1781,15 @@ macro_rules! mul_div_impl_unsigned_tests {
 
                 if expected > $t::MAX as $u {
                     assert!(res.is_none(),
-                            format!("{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap()));
+                            "{} * {} / {}: expected overflow, got {}",
+                                    val, num, den, res.unwrap());
                 } else {
                     assert!(res.is_some(),
-                            format!("{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected));
-                    assert!(res.unwrap() == expected as $t,
-                            format!("{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap()));
+                            "{} * {} / {}: expected {} but got overflow",
+                                    val, num, den, expected);
+                    assert_eq!(res.unwrap(), expected as $t,
+                            "{} * {} / {}: expected {} but got {}",
+                                    val, num, den, expected, res.unwrap());
                 }
             }
         }
@@ -1944,7 +1824,7 @@ macro_rules! mul_div_impl_signed {
         type Output = $t;
 
         fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
-            assert!(denom != 0);
+            assert_ne!(denom, 0);
 
             let sgn = self.signum() * num.signum() * denom.signum();
 
@@ -1966,7 +1846,7 @@ macro_rules! mul_div_impl_signed {
         }
 
         fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
-            assert!(denom != 0);
+            assert_ne!(denom, 0);
 
             let sgn = self.signum() * num.signum() * denom.signum();
 
@@ -1990,7 +1870,7 @@ macro_rules! mul_div_impl_signed {
         }
 
         fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
-            assert!(denom != 0);
+            assert_ne!(denom, 0);
 
             let sgn = self.signum() * num.signum() * denom.signum();
 
@@ -2052,15 +1932,15 @@ macro_rules! mul_div_impl_signed_tests {
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
                     assert!(res.is_none(),
-                            format!("{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap()));
+                            "{} * {} / {}: expected overflow, got {}",
+                                    val, num, den, res.unwrap());
                 } else {
                     assert!(res.is_some(),
-                            format!("{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected));
-                    assert!(res.unwrap() == expected as $t,
-                            format!("{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap()));
+                            "{} * {} / {}: expected {} but got overflow",
+                                    val, num, den, expected);
+                    assert_eq!(res.unwrap(), expected as $t,
+                            "{} * {} / {}: expected {} but got {}",
+                                    val, num, den, expected, res.unwrap());
                 }
             }
         }
@@ -2089,15 +1969,15 @@ macro_rules! mul_div_impl_signed_tests {
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
                     assert!(res.is_none(),
-                            format!("{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap()));
+                            "{} * {} / {}: expected overflow, got {}",
+                                    val, num, den, res.unwrap());
                 } else {
                     assert!(res.is_some(),
-                            format!("{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected));
-                    assert!(res.unwrap() == expected as $t,
-                            format!("{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap()));
+                            "{} * {} / {}: expected {} but got overflow",
+                                    val, num, den, expected);
+                    assert_eq!(res.unwrap(), expected as $t,
+                            "{} * {} / {}: expected {} but got {}",
+                                    val, num, den, expected, res.unwrap());
                 }
             }
         }
@@ -2123,15 +2003,15 @@ macro_rules! mul_div_impl_signed_tests {
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
                     assert!(res.is_none(),
-                            format!("{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap()));
+                            "{} * {} / {}: expected overflow, got {}",
+                                    val, num, den, res.unwrap());
                 } else {
                     assert!(res.is_some(),
-                            format!("{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected));
-                    assert!(res.unwrap() == expected as $t,
-                            format!("{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap()));
+                            "{} * {} / {}: expected {} but got overflow",
+                                    val, num, den, expected);
+                    assert_eq!(res.unwrap(), expected as $t,
+                            "{} * {} / {}: expected {} but got {}",
+                                    val, num, den, expected, res.unwrap());
                 }
             }
         }
