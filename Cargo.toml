@@ -28,3 +28,6 @@ x86-64-assembly = []
 [dev-dependencies]
 num = { version = "0.1.*" }
 rand = { version = "0.3.*" }
+
+[badges]
+travis-ci = { repository = "sdroege/rust-muldiv", branch = "master" }
