@@ -1,3 +1,7 @@
+// Copyright (C) 2016,2017 Sebastian Dröge <sebastian@centricular.com>
+//
+// Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
+
 //! Provides a trait for numeric types to perform combined multiplication and division with
 //! overflow protection.
 //!

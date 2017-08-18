@@ -3,7 +3,7 @@ name = "muldiv"
 version = "0.1.0"
 authors = ["Sebastian Dröge <sebastian@centricular.com>"]
 repository = "https://github.com/sdroege/rust-muldiv"
-license = "LGPL-2.1+"
+license = "MIT"
 keywords = ["integer", "arithmetic", "numerics"]
 categories = ["algorithms"]
 description = """
@@ -14,7 +14,7 @@ include = [
     "src/lib.rs",
     "src/u64_muldiv.rs",
     "src/u64_muldiv_x86_64.rs",
-    "COPYING",
+    "LICENSE",
     "README.md",
     "Cargo.toml",
 ]

@@ -1,3 +1,7 @@
+// Copyright (C) 2016,2017 Sebastian Dröge <sebastian@centricular.com>
+//
+// Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
+
 use std::u64;
 use std::mem::uninitialized;
 

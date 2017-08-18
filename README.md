@@ -5,14 +5,13 @@ division with overflow protection.
 
 ## LICENSE
 
-rust-muldiv is licensed under the Lesser General Public License version 2.1
-([COPYING](COPYING) or https://www.gnu.org/licenses/lgpl-2.1.html) or (at your
-option) any later version.
+rust-muldiv is licensed under the MIT license ([LICENSE](LICENSE) or
+http://opensource.org/licenses/MIT).
 
 ## Contribution
 
 Any kinds of contributions are welcome as a pull request.
 
-Unless you explicitly state otherwise, any contribution intentionally
-submitted for inclusion in rust-muldiv by you shall be licensed under the
-LGPLv2.1 license as above, without any additional terms or conditions.
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in send-cell by you shall be licensed under the MIT license as above,
+without any additional terms or conditions.

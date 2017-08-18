@@ -1,3 +1,7 @@
+// Copyright (C) 2016,2017 Sebastian Dröge <sebastian@centricular.com>
+//
+// Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
+
 use std::u32;
 use std::u64;
 
@@ -20,6 +24,12 @@ impl LoHi for u64 {
 
 // Port of gst_util_uint64_scale() and friends from
 // https://cgit.freedesktop.org/gstreamer/gstreamer/tree/gst/gstutils.c
+// Kindly relicensed to the MIT license by the copyright holders of the C code:
+// - Andy Wingo
+// - Wim Taymans
+// - Tim-Philipp Müller
+// - Kipp Cannon
+// - Sebastian Dröge
 
 #[derive(Copy, Clone)]
 struct U96 {
