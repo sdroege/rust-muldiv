@@ -21,15 +21,15 @@
 //! # }
 //! ```
 
-use std::u8;
 use std::u16;
 use std::u32;
 use std::u64;
+use std::u8;
 
-use std::i8;
 use std::i16;
 use std::i32;
 use std::i64;
+use std::i8;
 
 use std::cmp;
 
@@ -142,35 +142,46 @@ pub trait MulDiv<RHS = Self> {
 }
 
 macro_rules! mul_div_impl_unsigned {
-    ($t:ident, $u:ident) => (
+    ($t:ident, $u:ident) => {
+        impl MulDiv for $t {
+            type Output = $t;
 
-    impl MulDiv for $t {
-        type Output = $t;
+            fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
+                assert_ne!(denom, 0);
+                let r = ((self as $u) * (num as $u)) / (denom as $u);
+                if r > $t::MAX as $u {
+                    None
+                } else {
+                    Some(r as $t)
+                }
+            }
 
-        fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
-            assert_ne!(denom, 0);
-            let r = ((self as $u) * (num as $u)) / (denom as $u);
-            if r > $t::MAX as $u { None } else { Some(r as $t) }
+            fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
+                assert_ne!(denom, 0);
+                let r = ((self as $u) * (num as $u) + ((denom >> 1) as $u)) / (denom as $u);
+                if r > $t::MAX as $u {
+                    None
+                } else {
+                    Some(r as $t)
+                }
+            }
+
+            fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
+                assert_ne!(denom, 0);
+                let r = ((self as $u) * (num as $u) + ((denom - 1) as $u)) / (denom as $u);
+                if r > $t::MAX as $u {
+                    None
+                } else {
+                    Some(r as $t)
+                }
+            }
         }
-
-        fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
-            assert_ne!(denom, 0);
-            let r = ((self as $u) * (num as $u) + ((denom >> 1) as $u)) / (denom as $u);
-            if r > $t::MAX as $u { None } else { Some(r as $t) }
-        }
-
-        fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
-            assert_ne!(denom, 0);
-            let r = ((self as $u) * (num as $u) + ((denom - 1) as $u)) / (denom as $u);
-            if r > $t::MAX as $u { None } else { Some(r as $t) }
-        }
-    }
-    )
+    };
 }
 
 #[cfg(test)]
 macro_rules! mul_div_impl_unsigned_tests {
-    ($t:ident, $u:ident) => (
+    ($t:ident, $u:ident) => {
         use super::*;
 
         extern crate rand;
@@ -188,23 +199,42 @@ macro_rules! mul_div_impl_unsigned_tests {
                 let num: $t = rng.gen();
                 let den: $t = rng.gen();
 
-                if den == 0 { continue; }
+                if den == 0 {
+                    continue;
+                }
 
                 let res = val.mul_div_floor(num, den);
 
                 let expected = ((val as $u) * (num as $u)) / (den as $u);
 
                 if expected > $t::MAX as $u {
-                    assert!(res.is_none(),
-                            "{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap());
+                    assert!(
+                        res.is_none(),
+                        "{} * {} / {}: expected overflow, got {}",
+                        val,
+                        num,
+                        den,
+                        res.unwrap()
+                    );
                 } else {
-                    assert!(res.is_some(),
-                            "{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected);
-                    assert_eq!(res.unwrap(), expected as $t,
-                            "{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap());
+                    assert!(
+                        res.is_some(),
+                        "{} * {} / {}: expected {} but got overflow",
+                        val,
+                        num,
+                        den,
+                        expected
+                    );
+                    assert_eq!(
+                        res.unwrap(),
+                        expected as $t,
+                        "{} * {} / {}: expected {} but got {}",
+                        val,
+                        num,
+                        den,
+                        expected,
+                        res.unwrap()
+                    );
                 }
             }
         }
@@ -218,26 +248,47 @@ macro_rules! mul_div_impl_unsigned_tests {
                 let num: $t = rng.gen();
                 let den: $t = rng.gen();
 
-                if den == 0 { continue; }
+                if den == 0 {
+                    continue;
+                }
 
                 let res = val.mul_div_round(num, den);
 
                 let mut expected = ((val as $u) * (num as $u)) / (den as $u);
                 let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
 
-                if expected_rem >= ((den as $u) + 1) >> 1 { expected = expected + 1 }
+                if expected_rem >= ((den as $u) + 1) >> 1 {
+                    expected = expected + 1
+                }
 
                 if expected > $t::MAX as $u {
-                    assert!(res.is_none(),
-                            "{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap());
+                    assert!(
+                        res.is_none(),
+                        "{} * {} / {}: expected overflow, got {}",
+                        val,
+                        num,
+                        den,
+                        res.unwrap()
+                    );
                 } else {
-                    assert!(res.is_some(),
-                            "{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected);
-                    assert_eq!(res.unwrap(), expected as $t,
-                            "{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap());
+                    assert!(
+                        res.is_some(),
+                        "{} * {} / {}: expected {} but got overflow",
+                        val,
+                        num,
+                        den,
+                        expected
+                    );
+                    assert_eq!(
+                        res.unwrap(),
+                        expected as $t,
+                        "{} * {} / {}: expected {} but got {}",
+                        val,
+                        num,
+                        den,
+                        expected,
+                        res.unwrap()
+                    );
                 }
             }
         }
@@ -251,31 +302,51 @@ macro_rules! mul_div_impl_unsigned_tests {
                 let num: $t = rng.gen();
                 let den: $t = rng.gen();
 
-                if den == 0 { continue; }
+                if den == 0 {
+                    continue;
+                }
 
                 let res = val.mul_div_ceil(num, den);
 
                 let mut expected = ((val as $u) * (num as $u)) / (den as $u);
                 let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
 
-                if expected_rem != 0 { expected = expected + 1 }
+                if expected_rem != 0 {
+                    expected = expected + 1
+                }
 
                 if expected > $t::MAX as $u {
-                    assert!(res.is_none(),
-                            "{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap());
+                    assert!(
+                        res.is_none(),
+                        "{} * {} / {}: expected overflow, got {}",
+                        val,
+                        num,
+                        den,
+                        res.unwrap()
+                    );
                 } else {
-                    assert!(res.is_some(),
-                            "{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected);
-                    assert_eq!(res.unwrap(), expected as $t,
-                            "{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap());
+                    assert!(
+                        res.is_some(),
+                        "{} * {} / {}: expected {} but got overflow",
+                        val,
+                        num,
+                        den,
+                        expected
+                    );
+                    assert_eq!(
+                        res.unwrap(),
+                        expected as $t,
+                        "{} * {} / {}: expected {} but got {}",
+                        val,
+                        num,
+                        den,
+                        expected,
+                        res.unwrap()
+                    );
                 }
             }
         }
-
-    )
+    };
 }
 
 mul_div_impl_unsigned!(u64, u128);
@@ -305,80 +376,99 @@ mod muldiv_u8_tests {
 }
 
 macro_rules! mul_div_impl_signed {
-    ($t:ident, $u:ident, $v:ident, $b:expr) => (
+    ($t:ident, $u:ident, $v:ident, $b:expr) => {
+        impl MulDiv for $t {
+            type Output = $t;
 
-    impl MulDiv for $t {
-        type Output = $t;
+            fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
+                assert_ne!(denom, 0);
 
-        fn mul_div_floor(self, num: $t, denom: $t) -> Option<$t> {
-            assert_ne!(denom, 0);
+                let sgn = self.signum() * num.signum() * denom.signum();
 
-            let sgn = self.signum() * num.signum() * denom.signum();
+                let min_val: $u = 1 << ($b - 1);
+                let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
 
-            let min_val : $u = 1 << ($b - 1);
-            let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
+                let self_u = abs(self);
+                let num_u = abs(num);
+                let denom_u = abs(denom);
 
-            let self_u = abs(self);
-            let num_u = abs(num);
-            let denom_u = abs(denom);
+                if sgn < 0 {
+                    self_u.mul_div_ceil(num_u, denom_u)
+                } else {
+                    self_u.mul_div_floor(num_u, denom_u)
+                }.and_then(|r| {
+                    if r <= $t::MAX as $u {
+                        Some(sgn * (r as $t))
+                    } else if sgn < 0 && r == min_val {
+                        Some($t::MIN)
+                    } else {
+                        None
+                    }
+                })
+            }
 
-            if sgn < 0 {
-                self_u.mul_div_ceil(num_u, denom_u)
-            } else {
-                self_u.mul_div_floor(num_u, denom_u)
-            }.and_then(|r| if r <= $t::MAX as $u { Some(sgn * (r as $t)) }
-                              else if sgn < 0 && r == min_val { Some($t::MIN) }
-                              else { None }
-                      )
+            fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
+                assert_ne!(denom, 0);
+
+                let sgn = self.signum() * num.signum() * denom.signum();
+
+                let min_val: $u = 1 << ($b - 1);
+                let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
+
+                let self_u = abs(self);
+                let num_u = abs(num);
+                let denom_u = abs(denom);
+
+                if sgn < 0 {
+                    let r = ((self_u as $v) * (num_u as $v)
+                        + ((cmp::max(denom_u >> 1, 1) - 1) as $v))
+                        / (denom_u as $v);
+                    if r > $u::MAX as $v {
+                        None
+                    } else {
+                        Some(r as $u)
+                    }
+                } else {
+                    self_u.mul_div_round(num_u, denom_u)
+                }.and_then(|r| {
+                    if r <= $t::MAX as $u {
+                        Some(sgn * (r as $t))
+                    } else if sgn < 0 && r == min_val {
+                        Some($t::MIN)
+                    } else {
+                        None
+                    }
+                })
+            }
+
+            fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
+                assert_ne!(denom, 0);
+
+                let sgn = self.signum() * num.signum() * denom.signum();
+
+                let min_val: $u = 1 << ($b - 1);
+                let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
+
+                let self_u = abs(self);
+                let num_u = abs(num);
+                let denom_u = abs(denom);
+
+                if sgn < 0 {
+                    self_u.mul_div_floor(num_u, denom_u)
+                } else {
+                    self_u.mul_div_ceil(num_u, denom_u)
+                }.and_then(|r| {
+                    if r <= $t::MAX as $u {
+                        Some(sgn * (r as $t))
+                    } else if sgn < 0 && r == min_val {
+                        Some($t::MIN)
+                    } else {
+                        None
+                    }
+                })
+            }
         }
-
-        fn mul_div_round(self, num: $t, denom: $t) -> Option<$t> {
-            assert_ne!(denom, 0);
-
-            let sgn = self.signum() * num.signum() * denom.signum();
-
-            let min_val : $u = 1 << ($b - 1);
-            let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
-
-            let self_u = abs(self);
-            let num_u = abs(num);
-            let denom_u = abs(denom);
-
-            if sgn < 0 {
-                let r = ((self_u as $v) * (num_u as $v) +
-                         ((cmp::max(denom_u >> 1, 1) - 1) as $v)) / (denom_u as $v);
-                if r > $u::MAX as $v { None } else { Some(r as $u) }
-            } else {
-                self_u.mul_div_round(num_u, denom_u)
-            }.and_then(|r| if r <= $t::MAX as $u { Some(sgn * (r as $t)) }
-                           else if sgn < 0 && r == min_val { Some($t::MIN) }
-                           else { None }
-                      )
-        }
-
-        fn mul_div_ceil(self, num: $t, denom: $t) -> Option<$t> {
-            assert_ne!(denom, 0);
-
-            let sgn = self.signum() * num.signum() * denom.signum();
-
-            let min_val : $u = 1 << ($b - 1);
-            let abs = |x: $t| if x != $t::MIN { x.abs() as $u } else { min_val };
-
-            let self_u = abs(self);
-            let num_u = abs(num);
-            let denom_u = abs(denom);
-
-            if sgn < 0 {
-                self_u.mul_div_floor(num_u, denom_u)
-            } else {
-                self_u.mul_div_ceil(num_u, denom_u)
-            }.and_then(|r| if r <= $t::MAX as $u { Some(sgn * (r as $t)) }
-                           else if sgn < 0 && r == min_val { Some($t::MIN) }
-                           else { None }
-                      )
-        }
-    }
-    )
+    };
 }
 
 mul_div_impl_signed!(i64, u64, u128, 64);
@@ -388,7 +478,7 @@ mul_div_impl_signed!(i8, u8, u16, 8);
 
 #[cfg(test)]
 macro_rules! mul_div_impl_signed_tests {
-    ($t:ident, $u:ident) => (
+    ($t:ident, $u:ident) => {
         use super::*;
 
         extern crate rand;
@@ -407,26 +497,47 @@ macro_rules! mul_div_impl_signed_tests {
                 let den: $t = rng.gen();
                 let sgn = val.signum() * num.signum() * den.signum();
 
-                if den == 0 { continue; }
+                if den == 0 {
+                    continue;
+                }
 
                 let res = val.mul_div_floor(num, den);
 
                 let mut expected = ((val as $u) * (num as $u)) / (den as $u);
                 let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
 
-                if sgn < 0 && expected_rem.abs() != 0 { expected = expected - 1 }
+                if sgn < 0 && expected_rem.abs() != 0 {
+                    expected = expected - 1
+                }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
-                    assert!(res.is_none(),
-                            "{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap());
+                    assert!(
+                        res.is_none(),
+                        "{} * {} / {}: expected overflow, got {}",
+                        val,
+                        num,
+                        den,
+                        res.unwrap()
+                    );
                 } else {
-                    assert!(res.is_some(),
-                            "{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected);
-                    assert_eq!(res.unwrap(), expected as $t,
-                            "{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap());
+                    assert!(
+                        res.is_some(),
+                        "{} * {} / {}: expected {} but got overflow",
+                        val,
+                        num,
+                        den,
+                        expected
+                    );
+                    assert_eq!(
+                        res.unwrap(),
+                        expected as $t,
+                        "{} * {} / {}: expected {} but got {}",
+                        val,
+                        num,
+                        den,
+                        expected,
+                        res.unwrap()
+                    );
                 }
             }
         }
@@ -440,7 +551,9 @@ macro_rules! mul_div_impl_signed_tests {
                 let den: $t = rng.gen();
                 let sgn = val.signum() * num.signum() * den.signum();
 
-                if den == 0 { continue; }
+                if den == 0 {
+                    continue;
+                }
 
                 let res = val.mul_div_round(num, den);
 
@@ -454,16 +567,33 @@ macro_rules! mul_div_impl_signed_tests {
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
-                    assert!(res.is_none(),
-                            "{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap());
+                    assert!(
+                        res.is_none(),
+                        "{} * {} / {}: expected overflow, got {}",
+                        val,
+                        num,
+                        den,
+                        res.unwrap()
+                    );
                 } else {
-                    assert!(res.is_some(),
-                            "{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected);
-                    assert_eq!(res.unwrap(), expected as $t,
-                            "{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap());
+                    assert!(
+                        res.is_some(),
+                        "{} * {} / {}: expected {} but got overflow",
+                        val,
+                        num,
+                        den,
+                        expected
+                    );
+                    assert_eq!(
+                        res.unwrap(),
+                        expected as $t,
+                        "{} * {} / {}: expected {} but got {}",
+                        val,
+                        num,
+                        den,
+                        expected,
+                        res.unwrap()
+                    );
                 }
             }
         }
@@ -478,30 +608,51 @@ macro_rules! mul_div_impl_signed_tests {
                 let den: $t = rng.gen();
                 let sgn = val.signum() * num.signum() * den.signum();
 
-                if den == 0 { continue; }
+                if den == 0 {
+                    continue;
+                }
 
                 let res = val.mul_div_ceil(num, den);
 
                 let mut expected = ((val as $u) * (num as $u)) / (den as $u);
                 let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
 
-                if sgn > 0 && expected_rem.abs() != 0 { expected = expected + 1 }
+                if sgn > 0 && expected_rem.abs() != 0 {
+                    expected = expected + 1
+                }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
-                    assert!(res.is_none(),
-                            "{} * {} / {}: expected overflow, got {}",
-                                    val, num, den, res.unwrap());
+                    assert!(
+                        res.is_none(),
+                        "{} * {} / {}: expected overflow, got {}",
+                        val,
+                        num,
+                        den,
+                        res.unwrap()
+                    );
                 } else {
-                    assert!(res.is_some(),
-                            "{} * {} / {}: expected {} but got overflow",
-                                    val, num, den, expected);
-                    assert_eq!(res.unwrap(), expected as $t,
-                            "{} * {} / {}: expected {} but got {}",
-                                    val, num, den, expected, res.unwrap());
+                    assert!(
+                        res.is_some(),
+                        "{} * {} / {}: expected {} but got overflow",
+                        val,
+                        num,
+                        den,
+                        expected
+                    );
+                    assert_eq!(
+                        res.unwrap(),
+                        expected as $t,
+                        "{} * {} / {}: expected {} but got {}",
+                        val,
+                        num,
+                        den,
+                        expected,
+                        res.unwrap()
+                    );
                 }
             }
         }
-    )
+    };
 }
 
 // FIXME: https://github.com/rust-lang/rust/issues/12249
