@@ -10,11 +10,13 @@ description = """
 Provides a trait for numeric types to perform combined multiplication and
 division with overflow protection
 """
+readme = "README.md"
 include = [
     "src/lib.rs",
     "LICENSE",
     "README.md",
     "Cargo.toml",
+    "CHANGELOG.md",
 ]
 
 [dependencies]
