@@ -7,10 +7,10 @@
 //! Provides a trait for numeric types to perform combined multiplication and division with
 //! overflow protection.
 //!
-//! The `MulDiv` trait provides functions for performing combined multiplication and division for
+//! The [`MulDiv`] trait provides functions for performing combined multiplication and division for
 //! numeric types and comes with implementations for all the primitive integer types. Three
-//! variants with different rounding characteristics are provided: `mul_div_floor()`,
-//! `mul_div_round()` and `mul_div_ceil()`.
+//! variants with different rounding characteristics are provided: [`mul_div_floor()`],
+//! [`mul_div_round()`] and [`mul_div_ceil()`].
 //!
 //! ## Example
 //!
@@ -20,8 +20,13 @@
 //! # fn main() {
 //! // Calculates 127 * 23 / 42 rounded down
 //! let x = 127u8.mul_div_floor(23, 42);
+//! assert_eq!(x, Some(69));
 //! # }
 //! ```
+//! [`MulDiv`]: trait.MulDiv.html
+//! [`mul_div_floor()`]: trait.MulDiv.html#tymethod.mul_div_floor
+//! [`mul_div_round()`]: trait.MulDiv.html#tymethod.mul_div_round
+//! [`mul_div_ceil()`]: trait.MulDiv.html#tymethod.mul_div_ceil
 
 use core::u16;
 use core::u32;
@@ -44,10 +49,11 @@ use core::i8;
 /// This specifically means that e.g. the `u64` implementation must, depending on the arguments, be
 /// able to do 128 bit integer multiplication.
 pub trait MulDiv<RHS = Self> {
+    /// Output type for the methods of this trait.
     type Output;
 
-    /// Calculates `floor(val * num / denom)`, i.e. the next integer to the result of the division
-    /// with the smaller absolute value.
+    /// Calculates `floor(val * num / denom)`, i.e. the largest integer less than or equal to the
+    /// result of the division.
     ///
     /// ## Example
     ///
@@ -56,30 +62,30 @@ pub trait MulDiv<RHS = Self> {
     /// use muldiv::MulDiv;
     ///
     /// # fn main() {
-    /// // Returns x==Some(6)
     /// let x = 3i8.mul_div_floor(4, 2);
+    /// assert_eq!(x, Some(6));
     ///
-    /// // Returns x==Some(3)
     /// let x = 5i8.mul_div_floor(2, 3);
+    /// assert_eq!(x, Some(3));
     ///
-    /// // Returns x==Some(-3)
     /// let x = (-5i8).mul_div_floor(2, 3);
+    /// assert_eq!(x, Some(-4));
     ///
-    /// // Returns x==Some(4)
     /// let x = 3i8.mul_div_floor(3, 2);
+    /// assert_eq!(x, Some(4));
     ///
-    /// // Returns x==Some(-4)
     /// let x = (-3i8).mul_div_floor(3, 2);
+    /// assert_eq!(x, Some(-5));
     ///
-    /// // Returns x==None
     /// let x = 127i8.mul_div_floor(4, 3);
+    /// assert_eq!(x, None);
     /// # }
     /// ```
     fn mul_div_floor(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 
     /// Calculates `round(val * num / denom)`, i.e. the closest integer to the result of the
-    /// division. If both surrounding integers are the same distance, the one with the bigger
-    /// absolute value is returned.
+    /// division. If both surrounding integers are the same distance (`x.5`), the one with the bigger
+    /// absolute value is returned (round away from 0.0).
     ///
     /// ## Example
     ///
@@ -88,29 +94,29 @@ pub trait MulDiv<RHS = Self> {
     /// use muldiv::MulDiv;
     ///
     /// # fn main() {
-    /// // Returns x==Some(6)
     /// let x = 3i8.mul_div_round(4, 2);
+    /// assert_eq!(x, Some(6));
     ///
-    /// // Returns x==Some(3)
     /// let x = 5i8.mul_div_round(2, 3);
+    /// assert_eq!(x, Some(3));
     ///
-    /// // Returns x==Some(-3)
     /// let x = (-5i8).mul_div_round(2, 3);
+    /// assert_eq!(x, Some(-3));
     ///
-    /// // Returns x==Some(5)
     /// let x = 3i8.mul_div_round(3, 2);
+    /// assert_eq!(x, Some(5));
     ///
-    /// // Returns x==Some(-5)
     /// let x = (-3i8).mul_div_round(3, 2);
+    /// assert_eq!(x, Some(-5));
     ///
-    /// // Returns x==None
-    /// let x = 127i8.mul_div_floor(4, 3);
+    /// let x = 127i8.mul_div_round(4, 3);
+    /// assert_eq!(x, None);
     /// # }
     /// ```
     fn mul_div_round(self, num: RHS, denom: RHS) -> Option<Self::Output>;
 
-    /// Calculates `ceil(val * num / denom)`, i.e. the next integer to the result of the division
-    /// with the bigger absolute value.
+    /// Calculates `ceil(val * num / denom)`, i.e. the the smallest integer greater than or equal to
+    /// the result of the division.
     ///
     /// ## Example
     ///
@@ -119,23 +125,23 @@ pub trait MulDiv<RHS = Self> {
     /// use muldiv::MulDiv;
     ///
     /// # fn main() {
-    /// // Returns x==Some(6)
     /// let x = 3i8.mul_div_ceil(4, 2);
+    /// assert_eq!(x, Some(6));
     ///
-    /// // Returns x==Some(4)
     /// let x = 5i8.mul_div_ceil(2, 3);
+    /// assert_eq!(x, Some(4));
     ///
-    /// // Returns x==Some(-4)
     /// let x = (-5i8).mul_div_ceil(2, 3);
+    /// assert_eq!(x, Some(-3));
     ///
-    /// // Returns x==Some(5)
     /// let x = 3i8.mul_div_ceil(3, 2);
+    /// assert_eq!(x, Some(5));
     ///
-    /// // Returns x==Some(-5)
     /// let x = (-3i8).mul_div_ceil(3, 2);
+    /// assert_eq!(x, Some(-4));
     ///
-    /// // Returns x==None
     /// let x = (127i8).mul_div_ceil(4, 3);
+    /// assert_eq!(x, None);
     /// # }
     /// ```
     fn mul_div_ceil(self, num: RHS, denom: RHS) -> Option<Self::Output>;
