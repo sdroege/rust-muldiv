@@ -402,7 +402,8 @@ macro_rules! mul_div_impl_signed {
                     self_u.mul_div_ceil(num_u, denom_u)
                 } else {
                     self_u.mul_div_floor(num_u, denom_u)
-                }.and_then(|r| {
+                }
+                .and_then(|r| {
                     if r <= $t::MAX as $u {
                         Some(sgn * (r as $t))
                     } else if sgn < 0 && r == min_val {
@@ -435,7 +436,8 @@ macro_rules! mul_div_impl_signed {
                     }
                 } else {
                     self_u.mul_div_round(num_u, denom_u)
-                }.and_then(|r| {
+                }
+                .and_then(|r| {
                     if r <= $t::MAX as $u {
                         Some(sgn * (r as $t))
                     } else if sgn < 0 && r == min_val {
@@ -462,7 +464,8 @@ macro_rules! mul_div_impl_signed {
                     self_u.mul_div_floor(num_u, denom_u)
                 } else {
                     self_u.mul_div_ceil(num_u, denom_u)
-                }.and_then(|r| {
+                }
+                .and_then(|r| {
                     if r <= $t::MAX as $u {
                         Some(sgn * (r as $t))
                     } else if sgn < 0 && r == min_val {
