@@ -2,6 +2,8 @@
 //
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
+#![no_std]
+
 //! Provides a trait for numeric types to perform combined multiplication and division with
 //! overflow protection.
 //!
@@ -21,17 +23,15 @@
 //! # }
 //! ```
 
-use std::u16;
-use std::u32;
-use std::u64;
-use std::u8;
+use core::u16;
+use core::u32;
+use core::u64;
+use core::u8;
 
-use std::i16;
-use std::i32;
-use std::i64;
-use std::i8;
-
-use std::cmp;
+use core::i16;
+use core::i32;
+use core::i64;
+use core::i8;
 
 /// Trait for calculating `val * num / denom` with different rounding modes and overflow
 /// protection.
@@ -188,7 +188,7 @@ macro_rules! mul_div_impl_unsigned_tests {
 
         use self::rand::thread_rng;
         use self::rand::Rng;
-        use std::$t;
+        use core::$t;
 
         #[test]
         fn scale_floor_rng() {
@@ -485,7 +485,7 @@ macro_rules! mul_div_impl_signed_tests {
 
         use self::rand::thread_rng;
         use self::rand::Rng;
-        use std::$t;
+        use core::$t;
 
         #[test]
         fn scale_floor_rng() {
