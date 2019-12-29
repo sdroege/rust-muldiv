@@ -23,7 +23,7 @@ edition = "2018"
 [dependencies]
 
 [dev-dependencies]
-rand = "0.4"
+quickcheck = "0.9"
 
 [badges]
 travis-ci = { repository = "sdroege/rust-muldiv", branch = "master" }

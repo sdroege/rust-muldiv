@@ -190,165 +190,70 @@ macro_rules! mul_div_impl_unsigned_tests {
     ($t:ident, $u:ident) => {
         use super::*;
 
-        extern crate rand;
+        use quickcheck::{quickcheck, Arbitrary, Gen};
 
-        use self::rand::thread_rng;
-        use self::rand::Rng;
-        use core::$t;
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        struct NonZero($t);
 
-        #[test]
-        fn scale_floor_rng() {
-            let mut rng = thread_rng();
-
-            for _ in 0..10000 {
-                let val: $t = rng.gen();
-                let num: $t = rng.gen();
-                let den: $t = rng.gen();
-
-                if den == 0 {
-                    continue;
-                }
-
-                let res = val.mul_div_floor(num, den);
-
-                let expected = ((val as $u) * (num as $u)) / (den as $u);
-
-                if expected > $t::MAX as $u {
-                    assert!(
-                        res.is_none(),
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    );
-                } else {
-                    assert!(
-                        res.is_some(),
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    );
-                    assert_eq!(
-                        res.unwrap(),
-                        expected as $t,
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    );
+        impl Arbitrary for NonZero {
+            fn arbitrary<G: Gen>(g: &mut G) -> Self {
+                loop {
+                    let v = $t::arbitrary(g);
+                    if v != 0 {
+                        return NonZero(v);
+                    }
                 }
             }
         }
 
-        #[test]
-        fn scale_round_rng() {
-            let mut rng = thread_rng();
+        quickcheck! {
+            fn scale_floor(val: $t, num: $t, den: NonZero) -> bool {
+                let res = val.mul_div_floor(num, den.0);
 
-            for _ in 0..10000 {
-                let val: $t = rng.gen();
-                let num: $t = rng.gen();
-                let den: $t = rng.gen();
+                let expected = ((val as $u) * (num as $u)) / (den.0 as $u);
 
-                if den == 0 {
-                    continue;
+                if expected > $t::MAX as $u {
+                    res.is_none()
+                } else {
+                    res == Some(expected as $t)
                 }
+            }
+        }
 
-                let res = val.mul_div_round(num, den);
+        quickcheck! {
+            fn scale_round(val: $t, num: $t, den: NonZero) -> bool {
+                let res = val.mul_div_round(num, den.0);
 
-                let mut expected = ((val as $u) * (num as $u)) / (den as $u);
-                let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
+                let mut expected = ((val as $u) * (num as $u)) / (den.0 as $u);
+                let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
-                if expected_rem >= ((den as $u) + 1) >> 1 {
+                if expected_rem >= ((den.0 as $u) + 1) >> 1 {
                     expected = expected + 1
                 }
 
                 if expected > $t::MAX as $u {
-                    assert!(
-                        res.is_none(),
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    );
+                    res.is_none()
                 } else {
-                    assert!(
-                        res.is_some(),
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    );
-                    assert_eq!(
-                        res.unwrap(),
-                        expected as $t,
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    );
+                    res == Some(expected as $t)
                 }
             }
         }
 
-        #[test]
-        fn scale_ceil_rng() {
-            let mut rng = thread_rng();
+        quickcheck! {
+            fn scale_ceil(val: $t, num: $t, den: NonZero) -> bool {
+                let res = val.mul_div_ceil(num, den.0);
 
-            for _ in 0..10000 {
-                let val: $t = rng.gen();
-                let num: $t = rng.gen();
-                let den: $t = rng.gen();
-
-                if den == 0 {
-                    continue;
-                }
-
-                let res = val.mul_div_ceil(num, den);
-
-                let mut expected = ((val as $u) * (num as $u)) / (den as $u);
-                let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
+                let mut expected = ((val as $u) * (num as $u)) / (den.0 as $u);
+                let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if expected_rem != 0 {
                     expected = expected + 1
                 }
 
                 if expected > $t::MAX as $u {
-                    assert!(
-                        res.is_none(),
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    );
+                    res.is_none()
                 } else {
-                    assert!(
-                        res.is_some(),
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    );
-                    assert_eq!(
-                        res.unwrap(),
-                        expected as $t,
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    );
+                    res == Some(expected as $t)
                 }
             }
         }
@@ -489,174 +394,80 @@ macro_rules! mul_div_impl_signed_tests {
     ($t:ident, $u:ident) => {
         use super::*;
 
-        extern crate rand;
+        use quickcheck::{quickcheck, Arbitrary, Gen};
 
-        use self::rand::thread_rng;
-        use self::rand::Rng;
-        use core::$t;
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        struct NonZero($t);
 
-        #[test]
-        fn scale_floor_rng() {
-            let mut rng = thread_rng();
-
-            for _ in 0..10000 {
-                let val: $t = rng.gen();
-                let num: $t = rng.gen();
-                let den: $t = rng.gen();
-                let sgn = val.signum() * num.signum() * den.signum();
-
-                if den == 0 {
-                    continue;
+        impl Arbitrary for NonZero {
+            fn arbitrary<G: Gen>(g: &mut G) -> Self {
+                loop {
+                    let v = $t::arbitrary(g);
+                    if v != 0 {
+                        return NonZero(v);
+                    }
                 }
+            }
+        }
 
-                let res = val.mul_div_floor(num, den);
+        quickcheck! {
+            fn scale_floor(val: $t, num: $t, den: NonZero) -> bool {
+                let res = val.mul_div_floor(num, den.0);
 
-                let mut expected = ((val as $u) * (num as $u)) / (den as $u);
-                let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
+                let sgn = val.signum() * num.signum() * den.0.signum();
+                let mut expected = ((val as $u) * (num as $u)) / (den.0 as $u);
+                let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if sgn < 0 && expected_rem.abs() != 0 {
                     expected = expected - 1
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
-                    assert!(
-                        res.is_none(),
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    );
+                    res.is_none()
                 } else {
-                    assert!(
-                        res.is_some(),
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    );
-                    assert_eq!(
-                        res.unwrap(),
-                        expected as $t,
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    );
+                    res == Some(expected as $t)
                 }
             }
         }
-        #[test]
-        fn scale_round_rng() {
-            let mut rng = thread_rng();
 
-            for _ in 0..10000 {
-                let val: $t = rng.gen();
-                let num: $t = rng.gen();
-                let den: $t = rng.gen();
-                let sgn = val.signum() * num.signum() * den.signum();
+        quickcheck! {
+            fn scale_round(val: $t, num: $t, den: NonZero) -> bool {
+                let res = val.mul_div_round(num, den.0);
 
-                if den == 0 {
-                    continue;
-                }
+                let sgn = val.signum() * num.signum() * den.0.signum();
+                let mut expected = ((val as $u) * (num as $u)) / (den.0 as $u);
+                let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
-                let res = val.mul_div_round(num, den);
-
-                let mut expected = ((val as $u) * (num as $u)) / (den as $u);
-                let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
-
-                if sgn < 0 && expected_rem.abs() >= ((den as $u).abs() + 1) >> 1 {
+                if sgn < 0 && expected_rem.abs() >= ((den.0 as $u).abs() + 1) >> 1 {
                     expected = expected - 1
-                } else if sgn > 0 && expected_rem.abs() >= ((den as $u).abs() + 1) >> 1 {
+                } else if sgn > 0 && expected_rem.abs() >= ((den.0 as $u).abs() + 1) >> 1 {
                     expected = expected + 1
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
-                    assert!(
-                        res.is_none(),
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    );
+                    res.is_none()
                 } else {
-                    assert!(
-                        res.is_some(),
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    );
-                    assert_eq!(
-                        res.unwrap(),
-                        expected as $t,
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    );
+                    res == Some(expected as $t)
                 }
             }
         }
 
-        #[test]
-        fn scale_ceil_rng() {
-            let mut rng = thread_rng();
+        quickcheck! {
+            fn scale_ceil(val: $t, num: $t, den: NonZero) -> bool {
+                let res = val.mul_div_ceil(num, den.0);
 
-            for _ in 0..10000 {
-                let val: $t = rng.gen();
-                let num: $t = rng.gen();
-                let den: $t = rng.gen();
-                let sgn = val.signum() * num.signum() * den.signum();
-
-                if den == 0 {
-                    continue;
-                }
-
-                let res = val.mul_div_ceil(num, den);
-
-                let mut expected = ((val as $u) * (num as $u)) / (den as $u);
-                let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
+                let sgn = val.signum() * num.signum() * den.0.signum();
+                let mut expected = ((val as $u) * (num as $u)) / (den.0 as $u);
+                let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if sgn > 0 && expected_rem.abs() != 0 {
                     expected = expected + 1
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
-                    assert!(
-                        res.is_none(),
-                        "{} * {} / {}: expected overflow, got {}",
-                        val,
-                        num,
-                        den,
-                        res.unwrap()
-                    );
+                    res.is_none()
                 } else {
-                    assert!(
-                        res.is_some(),
-                        "{} * {} / {}: expected {} but got overflow",
-                        val,
-                        num,
-                        den,
-                        expected
-                    );
-                    assert_eq!(
-                        res.unwrap(),
-                        expected as $t,
-                        "{} * {} / {}: expected {} but got {}",
-                        val,
-                        num,
-                        den,
-                        expected,
-                        res.unwrap()
-                    );
+                    res == Some(expected as $t)
                 }
             }
         }
