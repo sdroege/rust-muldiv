@@ -420,9 +420,8 @@ macro_rules! mul_div_impl_signed {
                 let denom_u = abs(denom);
 
                 if sgn < 0 {
-                    let r = ((self_u as $v) * (num_u as $v)
-                        + ((cmp::max(denom_u >> 1, 1) - 1) as $v))
-                        / (denom_u as $v);
+                    let r =
+                        ((self_u as $v) * (num_u as $v) + ((denom_u >> 1) as $v)) / (denom_u as $v);
                     if r > $u::MAX as $v {
                         None
                     } else {
@@ -560,7 +559,7 @@ macro_rules! mul_div_impl_signed_tests {
                 let mut expected = ((val as $u) * (num as $u)) / (den as $u);
                 let expected_rem = ((val as $u) * (num as $u)) % (den as $u);
 
-                if sgn < 0 && expected_rem.abs() > ((den as $u).abs() + 1) >> 1 {
+                if sgn < 0 && expected_rem.abs() >= ((den as $u).abs() + 1) >> 1 {
                     expected = expected - 1
                 } else if sgn > 0 && expected_rem.abs() >= ((den as $u).abs() + 1) >> 1 {
                     expected = expected + 1
