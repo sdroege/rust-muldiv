@@ -228,7 +228,7 @@ macro_rules! mul_div_impl_unsigned_tests {
                 let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if expected_rem >= ((den.0 as $u) + 1) >> 1 {
-                    expected = expected + 1
+                    expected += 1
                 }
 
                 if expected > $t::MAX as $u {
@@ -247,7 +247,7 @@ macro_rules! mul_div_impl_unsigned_tests {
                 let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if expected_rem != 0 {
-                    expected = expected + 1
+                    expected += 1
                 }
 
                 if expected > $t::MAX as $u {
@@ -419,7 +419,7 @@ macro_rules! mul_div_impl_signed_tests {
                 let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if sgn < 0 && expected_rem.abs() != 0 {
-                    expected = expected - 1
+                    expected -= 1
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
@@ -439,9 +439,9 @@ macro_rules! mul_div_impl_signed_tests {
                 let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if sgn < 0 && expected_rem.abs() >= ((den.0 as $u).abs() + 1) >> 1 {
-                    expected = expected - 1
+                    expected -= 1
                 } else if sgn > 0 && expected_rem.abs() >= ((den.0 as $u).abs() + 1) >> 1 {
-                    expected = expected + 1
+                    expected += 1
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
@@ -461,7 +461,7 @@ macro_rules! mul_div_impl_signed_tests {
                 let expected_rem = ((val as $u) * (num as $u)) % (den.0 as $u);
 
                 if sgn > 0 && expected_rem.abs() != 0 {
-                    expected = expected + 1
+                    expected += 1
                 }
 
                 if expected > $t::MAX as $u || expected < $t::MIN as $u {
