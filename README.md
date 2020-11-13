@@ -1,4 +1,4 @@
-# rust-muldiv [![crates.io](https://img.shields.io/crates/v/muldiv.svg)](https://crates.io/crates/muldiv) [![Build Status](https://travis-ci.org/sdroege/rust-muldiv.svg?branch=master)](https://travis-ci.org/sdroege/rust-muldiv) [![docs.rs](https://docs.rs/muldiv/badge.svg)](https://docs.rs/muldiv)
+# rust-muldiv [![crates.io](https://img.shields.io/crates/v/muldiv.svg)](https://crates.io/crates/muldiv) [![Actions Status](https://github.com/sdroege/rust-muldiv/workflows/rust-muldiv/badge.svg)](https://github.com/sdroege/rust-muldiv/actions) [![docs.rs](https://docs.rs/muldiv/badge.svg)](https://docs.rs/muldiv)
 
 Provides a trait for numeric types to perform combined multiplication and
 division with overflow protection.
