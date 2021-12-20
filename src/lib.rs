@@ -552,7 +552,7 @@ fn u128_mul_u64(v: u128, n: u64) -> U192 {
     let h = vh * (n as u128) + l.hi();
 
     U192 {
-        h: h,
+        h,
         l: l.lo() as u64,
     }
 }
