@@ -2,8 +2,10 @@
 //
 // Licensed under the MIT license, see the LICENSE file or <http://opensource.org/licenses/MIT>
 
-use std::u128;
-use std::u64;
+#![no_std]
+
+use core::u128;
+use core::u64;
 
 const U64_MAX: u128 = u64::MAX as u128;
 
