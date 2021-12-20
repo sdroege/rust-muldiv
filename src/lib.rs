@@ -250,3 +250,85 @@ pub fn u128_scale(val: u128, num: u128, denom: u128, correct: u128) -> Option<u1
     // val is high and num is high --> use 256-bit muldiv
     u128_scale_u128_unchecked(val, num, denom, correct)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn u192_correct_h() {
+        let c = U192 { h: 100, l: 200 };
+        let val = u64::MAX - c.l + 1;
+        let result = u192_correct(c, val).unwrap();
+        assert_eq!(result.h, 101);
+        assert_eq!(result.l, 0);
+    }
+
+    #[test]
+    fn u192_correct_l() {
+        let c = U192 { h: 100, l: 200 };
+        let val = 300u64;
+        let result = u192_correct(c, val).unwrap();
+        assert_eq!(result.h, 100);
+        assert_eq!(result.l, 500);
+    }
+
+    #[test]
+    #[should_panic]
+    fn u192_correct_none() {
+        let c = U192 {
+            h: u128::MAX,
+            l: 200,
+        };
+        let val = u64::MAX - c.l + 1;
+        u192_correct(c, val).unwrap();
+    }
+
+    #[test]
+    fn u128_mul_u64_max() {
+        let v = u128::MAX;
+        let n = u64::MAX;
+        let result = u128_mul_u64(v, n);
+        assert_eq!(result.h, u128::MAX - U64_MAX - 1);
+        assert_eq!(result.l, 1);
+    }
+
+    #[test]
+    fn u192_div_u64_max() {
+        let v = u128::MAX;
+        let n = u64::MAX;
+        let num = u128_mul_u64(v, n);
+        let result = u192_div_u64(num, n);
+        assert_eq!(result, v);
+    }
+
+    #[test]
+    fn u128_scale_u64_unchecked_some() {
+        let val = u128::MAX;
+        let num = u64::MAX;
+        let denom = u64::MAX;
+        let correct = 0u64;
+        let result = u128_scale_u64_unchecked(val, num, denom, correct).unwrap();
+        assert_eq!(result, u128::MAX);
+    }
+
+    #[test]
+    #[should_panic]
+    fn u128_scale_u64_unchecked_none_0() {
+        let val = u128::MAX;
+        let num = u64::MAX;
+        let denom = u64::MAX;
+        let correct = u64::MAX;
+        u128_scale_u64_unchecked(val, num, denom, correct).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn u128_scale_u64_unchecked_none_1() {
+        let val = u128::MAX;
+        let num = u64::MAX;
+        let denom = u64::MAX - 1;
+        let correct = 0u64;
+        u128_scale_u64_unchecked(val, num, denom, correct).unwrap();
+    }
+}
