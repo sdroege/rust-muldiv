@@ -24,6 +24,3 @@ edition = "2018"
 
 [dev-dependencies]
 quickcheck = "1"
-
-[badges]
-travis-ci = { repository = "sdroege/rust-muldiv", branch = "master" }
