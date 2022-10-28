@@ -196,7 +196,7 @@ macro_rules! mul_div_impl_unsigned_tests {
         struct NonZero($t);
 
         impl Arbitrary for NonZero {
-            fn arbitrary<G: Gen>(g: &mut G) -> Self {
+            fn arbitrary(g: &mut Gen) -> Self {
                 loop {
                     let v = $t::arbitrary(g);
                     if v != 0 {
@@ -400,7 +400,7 @@ macro_rules! mul_div_impl_signed_tests {
         struct NonZero($t);
 
         impl Arbitrary for NonZero {
-            fn arbitrary<G: Gen>(g: &mut G) -> Self {
+            fn arbitrary(g: &mut Gen) -> Self {
                 loop {
                     let v = $t::arbitrary(g);
                     if v != 0 {
