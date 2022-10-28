@@ -13,5 +13,5 @@ http://opensource.org/licenses/MIT).
 Any kinds of contributions are welcome as a pull request.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in send-cell by you shall be licensed under the MIT license as above,
+for inclusion in rust-muldiv by you shall be licensed under the MIT license as above,
 without any additional terms or conditions.

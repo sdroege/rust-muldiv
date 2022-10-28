@@ -1,6 +1,6 @@
 [package]
 name = "muldiv"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Sebastian Dröge <sebastian@centricular.com>"]
 repository = "https://github.com/sdroege/rust-muldiv"
 license = "MIT"
